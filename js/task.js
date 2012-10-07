@@ -1,5 +1,5 @@
 var makeLikeable = (function ($, undefined) {
-    var hearts = localStorage.getItem('heartStore');
+    var hearts = $.browserCookie('heartStore');
     if (hearts == undefined)
         hearts = {};
     else
@@ -9,9 +9,6 @@ var makeLikeable = (function ($, undefined) {
      * Add heart buttons to photos
      *
      * Reads from heartStore to preset the button state.
-     *
-     * Assumes the use of a browser which supports localStorage.  Can be
-     * modified to use cookies, or other method of persisting content.
      */
     function addButtons() {
         $.each($('#photos .photo img'),function(i,img) {
@@ -29,13 +26,10 @@ var makeLikeable = (function ($, undefined) {
      *
      * Writes to heartStore to persist selections.
      *
-     * Assumes the use of a browser which supports localStorage. Can be
-     * modified to use cookies, or other method of persisting content.
-     *
      * Note: There is a known limitation: As the photos might scroll off
      * the API feed, if they have been hearted, they will remain in the
-     * localStorage JSON object.  There is no cleanup.  Old content would
-     * need to be expired in some way.
+     * cookie JSON object.  There is no cleanup.  Aside from expiring the
+     * whole cookie, individual items would need to be expired in some way.
      *
      * @param e
      */
@@ -52,7 +46,7 @@ var makeLikeable = (function ($, undefined) {
             icon.removeClass('icon-heart').addClass('icon-heart-empty');
             delete(hearts[img.src]);
         }
-        localStorage.setItem('heartStore',JSON.stringify(hearts));
+        $.browserCookie('heartStore',JSON.stringify(hearts));
     }
 
     return function() {
